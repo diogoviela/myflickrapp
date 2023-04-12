@@ -5,6 +5,10 @@ namespace App\Interfaces;
 interface PhotoRepositoryInterface
 {
 
-    public function savePhoto(array $photoDetails);
+    /**
+     * @param array $photoDetails
+     * @return void
+     */
+    public function savePhoto(array $photoDetails): void;
 
 }

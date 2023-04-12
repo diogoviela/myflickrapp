@@ -8,15 +8,19 @@ use App\Models\Photo;
 class PhotoRepository implements PhotoRepositoryInterface
 {
 
+    /**
+     * @param array $photoDetails
+     * @return void
+     */
     public function savePhoto(array $photoDetails): void
     {
 
         foreach($photoDetails['image'] as $key => $image) {
-            $newImage = new Photo;
-            $newImage->image = $image;
-            $newImage->title = $photoDetails['title'][$key];
-            $newImage->thumbnail = $photoDetails['thumbnail'][$key];
-            $newImage->save();
+            $newPhoto = new Photo;
+            $newPhoto->image = $image;
+            $newPhoto->title = $photoDetails['title'][$key];
+            $newPhoto->thumbnail = $photoDetails['thumbnail'][$key];
+            $newPhoto->save();
         }
 
     }

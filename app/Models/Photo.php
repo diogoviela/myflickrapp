@@ -11,6 +11,9 @@ class Photo extends Model
 
     protected $table = 'images';
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'title',
         'image',

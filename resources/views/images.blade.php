@@ -35,11 +35,19 @@
             margin-bottom: 10px;
             animation: fadeOut 5s forwards;
         }
+
         @keyframes fadeOut {
-            0% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { opacity: 0; }
+            0% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
         }
+
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -143,7 +151,11 @@
         <button type="submit" class="select-button">Save Images</button>
     </form>
 </div>
-
+@if(isset($success))
+    <div class="success-message">
+        {{ $success }}
+    </div>
+@endif
 @if(session('success'))
     <div class="success-message">{{ session('success') }}</div>
 @endif
@@ -151,6 +163,8 @@
 @if(session('error'))
     <div class="error-message">{{ session('error') }}</div>
 @endif
+
+
 
 <div class="image-container">
     <div class="grid-container">
