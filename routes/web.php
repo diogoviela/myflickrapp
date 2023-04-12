@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ImageController;
+use App\Http\Controllers\PhotoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,11 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-
-Route::get('/', [ImageController::class, 'index'])->name('flickr.index');
-Route::get('/flickr-images', [ImageController::class, 'getFlickrImagesWithSizes'])->name('flickr-images');
-
-Route::post('/flickr-save', [ImageController::class, 'saveImages'])->name('flickr-save');
+Route::get('/', [PhotoController::class, 'index'])->name('flickr.index');
+Route::get('/images', [PhotoController::class, 'getImagesWithSizes'])->name('images');
+Route::post('/save-images', [PhotoController::class, 'saveImages'])->name('save-images');

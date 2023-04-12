@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Flickr Images</title>
+    <title>Images - from FlickrAPI</title>
     <style>
         .image-container {
             margin-bottom: 20px;
@@ -17,18 +17,29 @@
             margin-bottom: 20px;
         }
 
-        .btn {
-            margin-right: 10px;
-        }
-
-        .success {
+        .success-message {
             color: green;
+            background-color: #e6ffe6;
+            border: 1px solid #66ff66;
+            padding: 10px;
+            margin: 10px 0;
+            animation: fadeOut 5s forwards;
         }
 
-        .error {
-            color: red;
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            animation: fadeOut 5s forwards;
         }
-
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -61,6 +72,7 @@
             outline: none;
             box-shadow: 0 0 5px #b3d9ff;
         }
+
         .select-button {
             display: inline-block;
             padding: 0.5rem 1rem;
@@ -93,6 +105,7 @@
             border-color: #f8f9fa;
             color: #212529;
         }
+
         .hidden-button {
             display: none;
         }
@@ -100,10 +113,10 @@
 </head>
 <body>
 <div class="btn-container">
-    <form action="{{ route('flickr-images') }}" method="get">
+    <form action="{{ route('images') }}" method="get">
         <label for="extras"></label>
         <select name="extras" id="extras">
-            <option value="q">Default</option>
+            <option>Select Size</option>
             <option value="s">Square</option>
             <option value="q">Large Square</option>
             <option value="t">Thumbnail</option>
@@ -112,33 +125,37 @@
             <option value="c">Medium 800</option>
             <option value="b">Large</option>
         </select>
-        <button type="submit" class="hidden-button">Change Size</button>
+        <button type="submit" class="hidden-button"></button>
         <script>
-            document.getElementById("extras").addEventListener("change", function() {
+            document.getElementById("extras").addEventListener("change", function () {
                 this.form.submit();
             });
         </script>
     </form>
-    <hr />
-    <form action="{{ route('flickr-save') }}" method="post">
+    <hr/>
+    <form action="{{ route('save-images') }}" method="post">
         @csrf
-        <input type="hidden" name="images" value="{{ json_encode($photos) }}">
+        @foreach($photos as $photo)
+            <input type="hidden" id="image" name="image[]" value="{{ $photo['image'] }}">
+            <input type="hidden" id="title" name="title[]" value="{{ $photo['title'] }}">
+            <input type="hidden" id="thumbnail" name="thumbnail[]" value="{{ $photo['thumbnail'] }}">
+        @endforeach
         <button type="submit" class="select-button">Save Images</button>
     </form>
 </div>
 
 @if(session('success'))
-    <div class="success">{{ session('success') }}</div>
+    <div class="success-message">{{ session('success') }}</div>
 @endif
 
 @if(session('error'))
-    <div class="error">{{ session('error') }}</div>
+    <div class="error-message">{{ session('error') }}</div>
 @endif
 
 <div class="image-container">
     <div class="grid-container">
         @foreach($photos as $photo)
-        <div class="grid-item"><img src="{{ $photo['image'] }}" alt="{{ $photo['title'] }}"></div>
+            <div class="grid-item"><img src="{{ $photo['image'] }}" alt="{{ $photo['title'] }}"></div>
         @endforeach
     </div>
 </div>

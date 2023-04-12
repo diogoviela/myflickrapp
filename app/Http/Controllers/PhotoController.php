@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\PhotoRepositoryInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Models\Image;
-use Illuminate\Support\Facades\Http;
 
-class ImageController extends Controller
+class PhotoController extends Controller
 {
+    private PhotoRepositoryInterface $photoRepository;
+
+    public function __construct(PhotoRepositoryInterface $photoRepository)
+    {
+        $this->photoRepository = $photoRepository;
+    }
+
     /**
      * @param Request $request
      * @return Application|Factory|View
      */
-    public function index(Request $request): Application|Factory|View
+    public function index(Request $request): View|Factory|Application
     {
         $apiKey = 'f9cc014fa76b098f9e82f1c288379ea1';
         $perPage = 10;
@@ -43,7 +50,7 @@ class ImageController extends Controller
      * @param Request $request
      * @return Application|Factory|View
      */
-    public function getFlickrImagesWithSizes(Request $request): Application|Factory|View
+    public function getImagesWithSizes(Request $request): Application|Factory|View
     {
         $apiKey = 'f9cc014fa76b098f9e82f1c288379ea1';
         $tag = 'kitten';
@@ -75,20 +82,19 @@ class ImageController extends Controller
         return view('images', compact('photos'));
     }
 
-    public function saveImages(Request $request)
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function saveImages(Request $request): RedirectResponse
     {
-        $photos = $request->input('photo');
+        $photoDetails = $request->validate([
+            'image' => 'required',
+            'title' => 'nullable',
+            'thumbnail' => 'required',
+        ]);
 
-        foreach ($photos as $photo) {
-            Image::create([
-                'title' => $photo['title'],
-                'url' => $photo['url'],
-                'thumbnail_url' => $photo['thumbnail_url'],
-            ]);
-        }
-
-        return redirect()->route('flickr-images')->with('success', 'Images saved successfully.');
+        return redirect($this->photoRepository->savePhoto($photoDetails))->back()->with('success', 'Images saved successfully.');
     }
-
 
 }
